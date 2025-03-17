@@ -1,4 +1,5 @@
 import argparse
+from utils import set_seed
 from generator import LLaVa_NeXT_Video_generator
 # To-Do: Add more generators in the future and import them here
 
@@ -7,18 +8,15 @@ def main():
         description="Select which generator to run and specify a config file."
     )
     parser.add_argument(
-        "--generator",
-        type=str,
-        default="llava-next-video",
-        help="Name of the generator to run"
-    )
+        "--generator", type=str, default="llava-next-video", help="Name of the generator to run")
     parser.add_argument(
-        "--config",
-        type=str,
-        default="config.json",
-        help="Path to the configuration JSON file"
-    )
+        "--config", type=str, default="config.json", help="Path to the configuration JSON file")
+    parser.add_argument("--output_file" , type=str, default="output_answers.csv", help="Path to the output file")
+
+    parser.add_argument("--seed", type=int, default=1000, help="Seed for reproducibility")
     args = parser.parse_args()
+
+    set_seed(args.seed)
 
     # Map generator names to their corresponding functions.
     generators = {

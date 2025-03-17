@@ -67,8 +67,15 @@ class VideoFrameDataset(Dataset):
             list: Selected frame file paths.
         """
         if len(frames) < self.sequence_length:
-            # Pad by repeating the last frame
+            # Padding last frame
             frames += [frames[-1]] * (self.sequence_length - len(frames))
+        # if len(frames) < self.sequence_length:
+        #     #cyclic padding
+        #     frames = (frames * (self.sequence_length // len(frames) + 1))[:self.sequence_length]
+        # if len(frames) < self.sequence_length:
+        #     #Linear Interpolation
+        #     indices = np.linspace(0, len(frames) - 1, self.sequence_length).astype(int)
+        #     frames = [frames[i] for i in indices]
         else:
             step = max(len(frames) // self.sequence_length, 1)
             offset = random.randint(0, step - 1) if step > 1 else 0
