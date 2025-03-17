@@ -41,4 +41,6 @@ The results are saved in a CSV file with the following columns:
 ## To-Do
 - [ ] **Adding more models** to expand benchmarking capabilities.
 
+License
 
+This work is licensed under CC BY-SA 4.0 .
