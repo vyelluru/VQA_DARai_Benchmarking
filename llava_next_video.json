@@ -1,0 +1,8 @@
+{
+    "dataset_root": "/mnt/Data1/RGB_sd",
+    "sequence_length": 16,
+    "csv_filename": "output_answers.csv",
+    "question": "What is the person doing in this video?",
+    "max_new_tokens": 100,
+    "seed": 42
+}
