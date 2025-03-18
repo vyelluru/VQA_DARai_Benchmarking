@@ -9,7 +9,7 @@ To use this benchmarking tool, clone the repository and install the required dep
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-repo/VQA_DARai_Benchmarking.git
+git clone "address"
 cd VQA_DARai_Benchmarking
 
 # Install dependencies
