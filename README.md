@@ -20,7 +20,8 @@ pip install -r requirements.txt
 ### Running the Benchmarking Script
 To generate and save answers from a dataset, use:
 
-```python main.py --generator "model name" --config "Path to the configuration JSON file" 
+```
+python main.py --generator "model name" --config "Path to the configuration JSON file" 
 
 ```
 
