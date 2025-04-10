@@ -82,6 +82,10 @@ def generate_answer(instance, question, processor, model, max_new_tokens=100):
 
 
 def generate_answer_instruct_blip_video(instance, question, processor, model, max_new_tokens=100):
+    """
+    Generates an answer from the InstructBlipVideo model based on a given question and a video sample of 4 image frames.
+    Returns: the cleaned answer
+    """
     # Unpack the sample
     frames, activity, camera, (subject_id, session_id) = instance
 
@@ -92,7 +96,11 @@ def generate_answer_instruct_blip_video(instance, question, processor, model, ma
     frame_images = random.sample(frame_images, 4)
 
     prompt = question
-    inputs = processor(text=prompt, images=video_frames, return_tensors="pt").to(model.device)
+    inputs = processor(
+        text=prompt, 
+        images=video_frames, 
+        return_tensors="pt"
+    ).to(model.device)
     
     outputs = model.generate(
         **inputs,
