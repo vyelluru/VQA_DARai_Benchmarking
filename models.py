@@ -138,16 +138,16 @@ def instruct_blip_generate_answer(instance, question, processor, model, max_new_
     frames, activity, camera, (subject_id, session_id) = instance
 
     # Convert each NumPy frame to a PIL Image
-    to_pil = ToPILImage()
-    frame_images = [to_pil(frame) for frame in frames]
+    # to_pil = ToPILImage()
+    # frame_images = [to_pil(frame) for frame in frames]
 
-    #reduce frame_images to 4 random frames
-    frame_images = random.sample(frame_images, 4)
+    # #reduce frame_images to 4 random frames
+    # frame_images = random.sample(frame_images, 4)
 
     prompt = question
     inputs = processor(
         text=prompt, 
-        images=video_frames, 
+        images=frames,
         return_tensors="pt"
     ).to(model.device)
     

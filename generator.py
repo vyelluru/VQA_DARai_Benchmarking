@@ -117,7 +117,7 @@ def LLaMA3_Video_generator(config_filename):
             video_path, activity, camera, ids = dataset[idx]
             subject_id, session_id = ids
             questions = cfg["question"]
-            max_tokens = cfg.get("max_new_tokens", 128)
+            max_tokens = cfg.get("max_new_tokens", 250)
             for question in questions:
                 answer = LLaMA3_generate_answer(video_path, question, model, processor, max_tokens)
                 output_entry = {
@@ -159,7 +159,7 @@ def Instruct_Blip_Video_generator(config_filename):
         cfg = json.load(f)
 
     dataset_root = cfg.get("dataset_root", "/mnt/Data1/RGB_sd")
-    sequence_length = cfg.get("sequence_length", 16)
+    sequence_length = cfg.get("sequence_length", 4)
     csv_filename = cfg.get("csv_filename", "output_answers_instruct_blip_video.csv")
     questions = cfg.get("question") #List of questions
 
