@@ -1,12 +1,17 @@
 import torch
 from torchvision.transforms import ToPILImage
 from transformers import BitsAndBytesConfig, LlavaNextVideoForConditionalGeneration, LlavaNextVideoProcessor
+from transformers import AutoModelForCausalLM, AutoProcessor
+from transformers import *
 
 
-def load_model_and_processor(model_name="llava-hf/LLaVA-NeXT-Video-7B-hf"):
+import torch
+from transformers import BitsAndBytesConfig, LlavaNextVideoForConditionalGeneration, LlavaNextVideoProcessor
+from transformers import AutoModelForCausalLM, AutoProcessor
+
+def load_Llava_model_and_processor(model_name="llava-hf/LLaVA-NeXT-Video-7B-hf"):
     """
     Loads the LlavaNextVideo model and its processor.
-
     Returns:
         model, processor: The loaded model and processor.
     """
@@ -15,7 +20,7 @@ def load_model_and_processor(model_name="llava-hf/LLaVA-NeXT-Video-7B-hf"):
         bnb_4bit_compute_dtype=torch.float16
     )
 
-    processor = LlavaNextVideoProcessor.from_pretrained("llava-hf/LLaVA-NeXT-Video-7B-hf")
+    processor = LlavaNextVideoProcessor.from_pretrained(model_name)
     model = LlavaNextVideoForConditionalGeneration.from_pretrained(
         "llava-hf/LLaVA-NeXT-Video-7B-hf",
         quantization_config=quantization_config,
@@ -25,10 +30,28 @@ def load_model_and_processor(model_name="llava-hf/LLaVA-NeXT-Video-7B-hf"):
     return model, processor
 
 
+def load_LLaMA3_model_and_processor(model_name="DAMO-NLP-SG/VideoLLaMA3-2B"):
+    """
+    Loads the VideoLLaMA3-2B model and its processor.
+    Returns:
+        model, processor: The loaded model and processor
+    """
+
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        trust_remote_code=True,
+        device_map="auto",
+        torch_dtype=torch.bfloat16,
+        #attn_implementation="flash_attention_2",
+    )
+    processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
+    return model, processor
+
 def load_model_and_processor_instruct_blip_video(model_name="Salesforce/instructblip-vicuna-7b"):
     '''
         Loads the InstructBlipVideo model and its processor.
-        Returns: model, processor: The loaded model and processor
+        Returns:
+            model, processor: The loaded model and processor
     '''
 
     processor = InstructBlipVideoProcessor.from_pretrained("Salesforce/instructblip-vicuna-7b", device_map= {"": "cuda:0"})
@@ -37,8 +60,7 @@ def load_model_and_processor_instruct_blip_video(model_name="Salesforce/instruct
     return model, processor
 
 
-
-def generate_answer(instance, question, processor, model, max_new_tokens=100):
+def LLaVa_NeXT_generate_answer(instance, question, processor, model, max_new_tokens=100):
     """
     Generates an answer from the LlavaNextVideo model based on a given question and a video sample.
     Returns:
@@ -81,8 +103,33 @@ def generate_answer(instance, question, processor, model, max_new_tokens=100):
     return cleaned_answer
 
 
+def LLaMA3_generate_answer(instance, question, model, processor, max_tokens):
+    """
+    Generates an answer for a given video sample.
+    """
 
-def generate_answer_instruct_blip_video(instance, question, processor, model, max_new_tokens=100):
+    # Video conversation
+    conversation = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {
+            "role": "user",
+            "content": [
+                {"type": "video", "video": {"video_path": instance, "fps": 1, "max_frames": 5}},
+                {"type": "text", "text": question},
+            ]
+        },
+    ]
+
+    inputs = processor(conversation=conversation, return_tensors="pt")
+    inputs = {k: v.cuda() if isinstance(v, torch.Tensor) else v for k, v in inputs.items()}
+    if "pixel_values" in inputs:
+        inputs["pixel_values"] = inputs["pixel_values"].to(torch.bfloat16)
+    output_ids = model.generate(**inputs, max_new_tokens = max_tokens)
+    response = processor.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
+    print(response)
+    return response
+
+def instruct_blip_generate_answer(instance, question, processor, model, max_new_tokens=100):
     """
     Generates an answer from the InstructBlipVideo model based on a given question and a video sample of 4 image frames.
     Returns: the cleaned answer

@@ -1,6 +1,6 @@
 import argparse
 from utils import set_seed
-from generator import LLaVa_NeXT_Video_generator
+from generator import LLaVa_NeXT_Video_generator , LLaMA3_Video_generator , Instruct_Blip_Video_generator
 # To-Do: Add more generators in the future and import them here
 
 def main():
@@ -21,6 +21,7 @@ def main():
     # Map generator names to their corresponding functions.
     generators = {
         "llava-next-video": LLaVa_NeXT_Video_generator,
+        "llama3_video": LLaMA3_Video_generator,
         "instruct-blip-video": Instruct_Blip_Video_generator,
         # To-Do: "other": OtherModel_generator,
     }
