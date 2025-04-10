@@ -76,6 +76,7 @@
 import csv
 import os
 import json
+import random
 from dataset import VideoFrameDataset
 from models import load_model_and_processor, generate_answer
 from utils import set_seed
