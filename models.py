@@ -24,6 +24,19 @@ def load_model_and_processor(model_name="llava-hf/LLaVA-NeXT-Video-7B-hf"):
     )
     return model, processor
 
+
+def load_model_and_processor_instruct_blip_video(model_name="Salesforce/instructblip-vicuna-7b"):
+    '''
+        Loads the InstructBlipVideo model and its processor.
+        Returns: model, processor: The loaded model and processor
+    '''
+
+    processor = InstructBlipVideoProcessor.from_pretrained("Salesforce/instructblip-vicuna-7b", device_map= {"": "cuda:0"})
+    model = InstructBlipVideoForConditionalGeneration.from_pretrained("Salesforce/instructblip-vicuna-7b")
+
+    return model, processor
+    
+
 def generate_answer(instance, question, processor, model, max_new_tokens=100):
     """
     Generates an answer from the LlavaNextVideo model based on a given question and a video sample.
