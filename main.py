@@ -21,6 +21,7 @@ def main():
     # Map generator names to their corresponding functions.
     generators = {
         "llava-next-video": LLaVa_NeXT_Video_generator,
+        "instruct-blip-video": Instruct_Blip_Video_generator,
         # To-Do: "other": OtherModel_generator,
     }
 
