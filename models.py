@@ -78,3 +78,29 @@ def generate_answer(instance, question, processor, model, max_new_tokens=100):
     cleaned_answer = full_answer if idx == -1 else full_answer[idx + len(marker):].strip()
 
     return cleaned_answer
+
+
+
+def generate_answer_instruct_blip_video(instance, question, processor, model, max_new_tokens=100):
+    # Unpack the sample
+    frames, activity, camera, (subject_id, session_id) = instance
+
+    # Convert each NumPy frame to a PIL Image
+    to_pil = ToPILImage()
+    frame_images = [to_pil(frame) for frame in frames]
+
+    frame_images = random.sample(frame_images, 4)
+
+    prompt = question
+    inputs = processor(text=prompt, images=video_frames, return_tensors="pt").to(model.device)
+    
+    outputs = model.generate(
+        **inputs,
+        do_sample=False,
+        num_beams=5,
+        max_length=max_new_tokens,
+        repetition_penalty=1.5,
+        length_penalty=1.0,
+    )
+    cleaned_answer = processor.batch_decode(outputs, skip_special_tokens=True)[0].strip()
+    return cleaned_answer
