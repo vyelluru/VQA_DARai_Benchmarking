@@ -110,5 +110,5 @@ def generate_answer_instruct_blip_video(instance, question, processor, model, ma
         repetition_penalty=1.5,
         length_penalty=1.0,
     )
-    cleaned_answer = processor.batch_decode(outputs, skip_special_tokens=True)[0].strip()
-    return cleaned_answer
+    answer = processor.batch_decode(outputs, skip_special_tokens=True)[0].strip()
+    return answer
